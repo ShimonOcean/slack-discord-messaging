@@ -1,11 +1,31 @@
-import React from 'react'
+import React from 'react';
+import { useDispatch } from 'react-redux';
+import { enterRoom } from '../features/appSlice';
+import { db } from "../firebase";
 import { SidebarOptionContainer, SidebarOptionChannel  } from "./SidebarOption.styles";
 
-function SidebarOption({ Icon, title, addChannelOption }) {
+function SidebarOption({ Icon, title, addChannelOption, id }) {
+    const dispatch = useDispatch();
 
-    const addChannel = () => {};
+    const addChannel = () => {
+        // !!! Future: Add content moderation feature on channel names
+        const channelName = prompt('Please enter the channel name');
 
-    const selectChannel = () => {};
+        if (channelName) {
+            db.collection('rooms').add({
+                name: channelName,
+            })
+        }
+
+    };
+
+    const selectChannel = () => {
+        if (id) {
+            dispatch(enterRoom({
+                roomId: id
+            }));
+        }
+    };
 
 
     return (
