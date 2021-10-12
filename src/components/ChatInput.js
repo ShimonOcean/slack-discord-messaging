@@ -17,6 +17,31 @@ function ChatInput({ channelName, channelId, chatRef }) {
         } 
 
         // !! Future: Add content moderation on input, if input is good then add to db collection
+        $(function() {
+            var params = {
+                // Request parameters
+                "PII": true,
+                "classify": "True",
+            };
+          
+            $.ajax({
+                url: "https://westus.api.cognitive.microsoft.com/contentmoderator/moderate/v1.0/ProcessText/Screen?" + $.param(params),
+                beforeSend: function(xhrObj){
+                    // Request headers
+                    xhrObj.setRequestHeader("Content-Type","text/plain");
+                    xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key",process.env.API_KEY);
+                },
+                type: "POST",
+                // Request body
+                data: "{body}",
+            })
+            .done(function(data) {
+                alert("success");
+            })
+            .fail(function() {
+                alert("error");
+            });
+        });
 
         db.collection("rooms").doc(channelId).collection("messages").add({
             message: input,
